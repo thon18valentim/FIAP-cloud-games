@@ -24,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\App.FCG.Core\FCG.Core.csproj" />
 		<ProjectReference Include="..\FGC.Shared\FCG.Shared.csproj" />
 	</ItemGroup>
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FCG.Core.Services;
+using FCG.Core.Web;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -6,7 +8,7 @@ using System.Text;
 
 namespace FCG.Authentication.Services
 {
-	public class AuthService(IConfiguration configuration) : IAuthService
+	public class AuthService(IConfiguration configuration) : BaseService, IAuthService
 	{
 		public string GenerateAuthToken(string email)
 		{
@@ -32,7 +34,21 @@ namespace FCG.Authentication.Services
 			return handler.CreateToken(tokenDescriptor);
 		}
 
+		public IApiResponse<string> ApiResponseTest(string name)
+		{
+			if (name == "erro")
+			{
+				return Fail<string>("Some error here");
+			}
+
+			return Success<string>($"Hello world {name}");
+		}
+
+		#region :: private ::
+
 		private static long ToUnixEpochDate(DateTime date)
 			=> (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+
+		#endregion
 	}
 }

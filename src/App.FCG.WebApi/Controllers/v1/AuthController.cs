@@ -70,6 +70,13 @@ public class AuthController(SignInManager<IdentityUser> signInManager,
         return CustomResponse();
     }
 
+    [HttpGet("test/{name}")]
+    public ActionResult Test(string name)
+    {
+        var result = authService.ApiResponseTest(name);
+        return StatusCode(result.StatusCode.GetHashCode(), result);
+    }
+
     private async Task<ValidationResult> RegistrarCliente(UsuarioRegistro usuarioRegistro)
     {
         var usuario = await userManager.FindByEmailAsync(usuarioRegistro.Email);
