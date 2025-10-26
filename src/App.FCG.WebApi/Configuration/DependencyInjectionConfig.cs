@@ -1,4 +1,5 @@
-﻿using FCG.Clients.Data;
+﻿using FCG.Authentication.Services;
+using FCG.Clients.Data;
 using FCG.Clients.Data.Repository;
 using FCG.Clients.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace App.FCG.WebApi.Configuration
             // Registrar outros serviços, repositórios e unidades de trabalho aqui
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             return builder;
         }

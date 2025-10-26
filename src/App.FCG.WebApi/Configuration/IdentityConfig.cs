@@ -19,7 +19,7 @@ namespace App.FCG.WebApi.Configuration
                     .AddEntityFrameworkStores<IdentityDbContext>()
                     .AddDefaultTokenProviders();
 
-            builder.AddJwtConfiguration();
+            //builder.AddJwtConfiguration();
 
             return builder;
         }
