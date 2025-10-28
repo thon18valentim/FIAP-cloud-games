@@ -25,6 +25,7 @@
 
 	<ItemGroup>
 		<Folder Include="Data\Mappings\" />
+		<Folder Include="Data\Repository\" />
 		<Folder Include="Services\" />
 	</ItemGroup>
 
