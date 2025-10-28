@@ -9,25 +9,11 @@ namespace FCG.Games.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string PublisherName { get; set; } // Entidade futura
-        public DateTime ReleaseDate { get; set; }
+        public DateOnly ReleaseDate { get; set; }
         public decimal Price { get; set; }
 
         // EF Relation
-        protected Game() 
-        {
-            ReleaseDate = DateTime.Now;
-        }
-
-        public static Game Create(string name, string description, string publisherName, decimal price)
-        {
-            return new Game
-            {
-                Name = name,
-                Description = description,
-                PublisherName = publisherName,
-                Price = price
-            };
-        }
+        protected Game() { }
 
         public class RegistrarClienteValidation : AbstractValidator<Game>
         {

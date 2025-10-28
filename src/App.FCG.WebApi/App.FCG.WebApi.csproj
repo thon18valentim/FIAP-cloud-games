@@ -42,4 +42,8 @@
 		<ProjectReference Include="..\FGC.Clientes\FCG.Clients.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Folder Include="Services\" />
+	</ItemGroup>
+
 </Project>
