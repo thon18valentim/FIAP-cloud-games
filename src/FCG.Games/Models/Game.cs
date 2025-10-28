@@ -8,16 +8,34 @@ namespace FCG.Games.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string PublisherName { get; set; } // Entidade futura
+        public string PublisherName { get; set; } // Entidade futura?
         public DateOnly ReleaseDate { get; set; }
         public decimal Price { get; set; }
 
         // EF Relation
         protected Game() { }
 
-        public class RegistrarClienteValidation : AbstractValidator<Game>
+        public Game(string name, string description, string publisherName, DateOnly releaseDate, decimal price)
         {
-            public RegistrarClienteValidation()
+            Name = name;
+            Description = description;
+            PublisherName = publisherName;
+            ReleaseDate = releaseDate;
+            Price = price;
+
+            if (!EhValido())
+                throw new DomainException();
+        }
+
+        public override bool EhValido()
+        {
+            ValidationResult = new RegistrarGameValidation().Validate(this);
+            return ValidationResult.IsValid;
+        }
+
+        public class RegistrarGameValidation : AbstractValidator<Game>
+        {
+            public RegistrarGameValidation()
             {
                 RuleFor(c => c.Id)
                     .NotEqual(Guid.Empty)
@@ -38,16 +56,6 @@ namespace FCG.Games.Models
                 RuleFor(c => c.Price)
                     .GreaterThan(0)
                     .WithMessage("Max Length is 500");
-            }
-
-            protected static bool TerCpfValido(Cpf cpf)
-            {
-                return Cpf.Validar(cpf.Numero);
-            }
-
-            protected static bool TerEmailValido(Email email)
-            {
-                return Email.Validar(email.Endereco);
             }
         }
     }

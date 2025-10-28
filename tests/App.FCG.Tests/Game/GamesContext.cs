@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FCG.Games.Data
+namespace FCG.Tests.Game
 {
     internal class GamesContext
     {

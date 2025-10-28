@@ -5,12 +5,12 @@ using FCG.Clients.Models;
 
 namespace FCG.Clients.Data
 {
-    public sealed class ClientsContext : DbContext, IUnitOfWork
+    public sealed class ClientContext : DbContext, IUnitOfWork
     {
         public DbSet<Client> Clientes { get; set; }
         public DbSet<Address> Enderecos { get; set; }
 
-        public ClientsContext(DbContextOptions<ClientsContext> options)
+        public ClientContext(DbContextOptions<ClientContext> options)
             : base(options)
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -28,7 +28,7 @@ namespace FCG.Clients.Data
             foreach (var relationship in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ClientsContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ClientContext).Assembly);
         }
 
         public async Task<bool> Commit()

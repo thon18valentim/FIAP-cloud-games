@@ -6,9 +6,9 @@ namespace FCG.Clients.Data.Repository
 {
     public class ClientRepository : GenericRepository<Client>, IClientRepository
     {
-        private readonly ClientsContext _context;
+        private readonly ClientContext _context;
 
-        public ClientRepository(ClientsContext context) : base(context)
+        public ClientRepository(ClientContext context) : base(context)
         {
             _context = context;
         }

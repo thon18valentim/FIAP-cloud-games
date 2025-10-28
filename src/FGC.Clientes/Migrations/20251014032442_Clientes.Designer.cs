@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FGC.Clients.Migrations
 {
-    [DbContext(typeof(ClientsContext))]
+    [DbContext(typeof(ClientContext))]
     [Migration("20251014032442_Clientes")]
     partial class Clientes
     {

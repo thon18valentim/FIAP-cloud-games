@@ -9,9 +9,10 @@ namespace App.FCG.WebApi.Controllers
     {
         public ICollection<string> Erros = new List<string>();
 
-        protected ActionResult CustomResponse(object result = null)
+        protected ActionResult CustomResponse(object result = null, int statusCode = 200)
         {
-            if (OperacaoValida()) return Ok(result);
+            if (OperacaoValida())
+                return StatusCode(statusCode, result);
 
             return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
             {

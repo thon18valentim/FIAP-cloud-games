@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using FCG.Authentication.Services;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using FCG.Clients.Services;
 using FCG.Shared.Dtos;
-using FCG.Authentication.Services;
 
 namespace App.FCG.WebApi.Controllers.v1;
 
