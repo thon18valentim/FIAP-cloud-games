@@ -13,8 +13,10 @@ builder.AddIdentityConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.RegisterServices();
 builder.AddSwaggerConfiguration();
+builder.AddSwaggerJwtConfiguration();
 
 var app = builder.Build();
 
