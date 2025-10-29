@@ -3,6 +3,7 @@ using FCG.Authentication.Services;
 using FCG.Clients.Data.Repository;
 using FCG.Clients.Data;
 using FCG.Clients.Services;
+using FCG.Core.Web;
 using FCG.Games.Data;
 using FCG.Games.Data.Repository;
 
@@ -17,6 +18,9 @@ namespace App.FCG.WebApi.Configuration
 
             builder.Services.AddDbContext<GameContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Core")));
+
+            builder.Services.AddScoped<INotificador, Notificador>();
+            builder.Services.AddScoped<IUser, AspNetUser>();
 
             // Repositories
             builder.Services.AddScoped<IClientRepository, ClientRepository>();

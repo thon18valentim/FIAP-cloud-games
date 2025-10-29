@@ -1,7 +1,8 @@
 ﻿using App.FCG.WebApi.Models.Dtos;
+using FCG.Core.Web;
 using FCG.Games.Data.Repository;
-using Microsoft.AspNetCore.Mvc;
 using FCG.Games.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace App.FCG.WebApi.Controllers.v1
 {
@@ -10,7 +11,7 @@ namespace App.FCG.WebApi.Controllers.v1
     {
         private readonly IGameRepository _gameRepository;
 
-        public GamesController(IGameRepository gameRepository)
+        public GamesController(INotificador notificador, IGameRepository gameRepository, IUser user) : base(notificador, user)
         {
             _gameRepository = gameRepository;
         }
@@ -24,23 +25,28 @@ namespace App.FCG.WebApi.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<IEnumerable<Game>>> GetById(Guid id)
+        public async Task<ActionResult<IEnumerable<GameGetDto>>> GetById(Guid id)
         {
             var game = await _gameRepository.GetById(id);
 
-            if (game is null) return NotFound();
+            if (game is null) return CustomResponse();
 
-            return Ok(game);
+            var result = new GameGetDto
+            {
+                Name = game.Name,
+                Description = game.Description,
+                PublisherName = game.PublisherName,
+                ReleaseDate = game.ReleaseDate,
+                Price = game.Price
+            };
+
+            return CustomResponse(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<Game>>> Post([FromBody] GameInsertDto game)
+        public async Task<ActionResult> Post([FromBody] GameInsertDto game)
         {
-            if (!game.IsValid()) 
-            {
-                game.ValidationResult.Errors.ToList().ForEach(e => AdicionarErroProcessamento(e.ErrorMessage));
-                return CustomResponse();
-            }
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var newGame = new Game(
                 game.Name,
@@ -57,16 +63,14 @@ namespace App.FCG.WebApi.Controllers.v1
             return CreatedAtAction(nameof(GetById), new { id = newGame.Id }, newGame);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<IEnumerable<Game>>> Put([FromBody] GameUpdateDto game)
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult<IEnumerable<Game>>> Put([FromRoute] Guid id, [FromBody] GameUpdateDto game)
         {
-            if (!game.IsValid())
-            {
-                game.ValidationResult.Errors.ToList().ForEach(e => AdicionarErroProcessamento(e.ErrorMessage));
-                return CustomResponse();
-            }
+            if (id != game.Id) return BadRequest();
 
-            var newGame = new Game(
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var gameUpdate = new Game(
                 game.Name,
                 game.Description,
                 game.PublisherName,
@@ -74,25 +78,25 @@ namespace App.FCG.WebApi.Controllers.v1
                 game.Price
             );
 
-            _gameRepository.Update(newGame);
+            _gameRepository.Update(gameUpdate);
 
             await _gameRepository.UnitOfWork.Commit();
 
-            return CreatedAtAction(nameof(GetById), new { id = newGame.Id }, newGame);
+            return CustomResponse(gameUpdate);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
             var game = await _gameRepository.GetById(id);
 
-            if (game is null) return CustomResponse(204);
+            if (game is null) return NotFound();
 
             _gameRepository.Delete(game);
 
             await _gameRepository.UnitOfWork.Commit();
 
-            return CustomResponse();
+            return CustomResponse(game);
         }
     }
 }
