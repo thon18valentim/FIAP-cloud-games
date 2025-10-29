@@ -1,16 +1,20 @@
 ﻿using FluentValidation.Results;
+using System.Text.Json.Serialization;
 
 namespace FCG.Core.Entities.Base
 {
 	public abstract class Entity
 	{
+        [JsonIgnore]
         public ValidationResult ValidationResult { get; set; }
 
         public Guid Id { get; protected set; }
-		public DateTime CreatedAt { get; protected set; }
+        public bool IsDeleted { get; protected set; } = false;
+        public DateTime CreatedAt { get; protected set; }
 		public DateTime? UpdatedAt { get; protected set; }
+		public DateTime? DeletedAt { get; protected set; }
 
-		protected Entity()
+        protected Entity()
 		{
 			Id = Guid.NewGuid();
 			CreatedAt = DateTime.UtcNow;

@@ -27,9 +27,37 @@ namespace FCG.Games.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GameContext).Assembly);
         }
 
-        public Task<bool> Commit()
+        public async Task<bool> Commit()
         {
-            throw new NotImplementedException();
+            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("CreationTime") != null))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Property("CreatedAt").CurrentValue = DateTime.Now;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Property("CreatedAt").IsModified = false;
+                    entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
+                }
+
+                if (entry.State == EntityState.Modified && (bool)entry.Property("IsDeleted").CurrentValue)
+                {
+                    foreach (var property in entry.Properties)
+                    {
+                        property.IsModified = false;
+                    }
+
+                    entry.Property("IsDeleted").IsModified = true;
+                    entry.Property("DeletedAt").IsModified = true;
+                    entry.Property("DeletedAt").CurrentValue = DateTime.Now;
+                }
+            }
+
+            var sucesso = await base.SaveChangesAsync() > 0;
+
+            return sucesso;
         }
     }
 }

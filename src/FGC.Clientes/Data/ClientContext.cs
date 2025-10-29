@@ -38,6 +38,32 @@ namespace FCG.Clients.Data
 
             try
             {
+                foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("CreationTime") != null))
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Property("CreatedAt").CurrentValue = DateTime.Now;
+                    }
+
+                    if (entry.State == EntityState.Modified)
+                    {
+                        entry.Property("CreatedAt").IsModified = false;
+                        entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
+                    }
+
+                    if (entry.State == EntityState.Modified && (bool)entry.Property("IsDeleted").CurrentValue)
+                    {
+                        foreach (var property in entry.Properties)
+                        {
+                            property.IsModified = false;
+                        }
+
+                        entry.Property("IsDeleted").IsModified = true;
+                        entry.Property("DeletedAt").IsModified = true;
+                        entry.Property("DeletedAt").CurrentValue = DateTime.Now;
+                    }
+                }
+
                 var sucesso = await SaveChangesAsync() > 0;
                 if (!sucesso) return false;
 
